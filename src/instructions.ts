@@ -1,4 +1,4 @@
-import type { Bit, Byte, DoubleBit, TripleBit } from "./binary.ts";
+import type { Bit, Byte, TripleBit } from "./binary.ts";
 
 import { List } from "./utils.ts";
 
