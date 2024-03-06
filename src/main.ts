@@ -1,10 +1,19 @@
 import { path } from "../deps.ts";
 import { decode } from "./disassembler/mod.ts";
 
+const [listingNumber = "0037"] = Deno.args;
+
 const cwd = Deno.cwd();
 const binDir = path.join(cwd, "test/assets/bin");
-const binFile = path.join(binDir, "listing-0037-single-register-mov");
+const binFile = Array
+  .from(Deno.readDirSync(binDir))
+  .map((entry) => entry.name)
+  .find((name) => name.includes(listingNumber));
 
-const buffer = await Deno.readFile(binFile);
+if (binFile == null) {
+  throw `Couldn't find listing #${listingNumber}.`;
+}
 
-decode(buffer);
+const buffer = await Deno.readFile(path.join(binDir, binFile));
+
+console.log(decode(buffer));
