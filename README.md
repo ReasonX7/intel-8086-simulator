@@ -1,3 +1,5 @@
+<!-- deno-fmt-ignore-file -->
+
 # intel-8086-simulator
 
 An emulator of 8086 processor that I develop within
@@ -49,11 +51,11 @@ deno task prepare                 # Compiles test `*.asm` files.
 
 ## Functionality
 
+List of all 8086 instructions can be found in
+[the 8086 manual](https://archive.org/details/bitsavers_intel80869lyUsersManualOct79_62967963/page/n260/mode/1up).
+
 Currently implemented instructions:
 
-> Source: "Intel 8086 Family User's Manual"
-> ([Table 4-12 "8086 Instruction Encoding"](https://archive.org/details/bitsavers_intel80869lyUsersManualOct79_62967963/page/n260/mode/1up))
-
-| Command  | `7 6 5 4 3 2 1 0` | `7 6 5 4 3 2 1 0` |
-|----------|-------------------|-------------------|
-| `mov`    | `1 0 0 0 1 0 d w` | `mod reg     r/m` |
+| Command | `7 6 5 4 3 2 1 0` | `7 6 5 4 3 2 1 0` |
+|---------|-------------------|-------------------|
+| `mov`   | `1 0 0 0 1 0 d w` | `mod reg   r/m  ` |
