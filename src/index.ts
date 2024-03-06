@@ -3,7 +3,7 @@ import type { Byte } from "./binary.ts";
 import { decode } from "./instructions";
 
 const cwd = process.cwd();
-const binDir = join(cwd, "test/bin");
+const binDir = join(cwd, "test/assets/bin");
 const binFile = join(binDir, "listing-0037-single-register-mov");
 
 const buffer = await Bun.file(binFile).arrayBuffer();

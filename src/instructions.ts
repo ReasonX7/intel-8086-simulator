@@ -1,5 +1,7 @@
 import type { Bit, Byte, DoubleBit, TripleBit } from "./binary.ts";
 
+import { List } from "./utils.ts";
+
 type FieldName = "w" | "d" | "reg" | "mod" | "r/m";
 
 type Field = {
@@ -67,21 +69,22 @@ const wordRegisters = ["ax", "cx", "dx", "bx", "ah", "ch", "dh", "bh"].map((name
 const registers = [byteRegisters, wordRegisters];
 
 const fieldArrayToMatrix = (fields: Field[]) => {
-  const { matrix } = fields.reduceRight(
-    (prev, field) => {
-      prev.fieldSizeSum += field.size;
-      prev.matrix[0].unshift(field);
+  return fields.reduceRight(
+    (prevMatrix, field) => {
+      List.unshift(prevMatrix[0], field);
 
-      if (prev.fieldSizeSum === 8) {
-        prev.matrix.unshift([]);
+      const sizeSum = prevMatrix[0]
+        .map((field) => field.size)
+        .reduce((result, size) => result + size);
+
+      if (sizeSum === 8) {
+        return List.unshift(prevMatrix, []);
       }
 
-      return prev;
+      return prevMatrix;
     },
-    { matrix: [[]], fieldSizeSum: 0 },
+    [[]],
   );
-
-  return matrix;
 };
 
 const createInstrDecoder = (operation: string, code: Byte, ...fieldNames: FieldName[]) => {
