@@ -147,7 +147,7 @@ const instrDecoders = [
 
 export const decode = (inputBytes: Uint8Array) => {
   let index = 0;
-  let str = "";
+  let str = "bits 16\n\n";
 
   while (index < inputBytes.length - 1) {
     for (const decoder of instrDecoders) {

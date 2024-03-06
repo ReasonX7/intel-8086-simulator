@@ -176,3 +176,5 @@ dist
 
 # Project folders & files
 bin
+tmp
+nasm-logs.txt
