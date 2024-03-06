@@ -115,8 +115,8 @@ const createInstrDecoder = (
     }
 
     let word = 0;
-    let direction = 0;
-    let mod = 0;
+    // let direction = 0;
+    // let mod = 0;
     const operands = [];
 
     for (let i = 0; i < fieldMatrix.length; i++) {
@@ -137,15 +137,15 @@ const createInstrDecoder = (
           case "w":
             word = code;
             break;
-          case "b":
-            direction = code;
-            break;
+          // case "b":
+          //   direction = code;
+          //   break;
           case "reg":
             operands.push(registers[word][code]);
             break;
-          case "mod":
-            mod = code;
-            break;
+          // case "mod":
+          //   mod = code;
+          //   break;
           case "r/m":
             operands.push(registers[word][code]);
             break;
