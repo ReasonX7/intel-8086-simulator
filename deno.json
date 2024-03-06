@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts",
+    "prepare": "deno run --allow-run --allow-read scripts/prepare.ts"
+  }
+}

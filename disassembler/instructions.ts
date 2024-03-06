@@ -6,7 +6,7 @@ type FieldName = "w" | "d" | "reg" | "mod" | "r/m";
 
 type Field = {
   name: string;
-  size: 1 | 2 | 3;
+  size: number;
 };
 
 type Registry = Field & {
@@ -26,6 +26,8 @@ const getMaskBySize = (size: number) => {
       return doubleBitMask;
     case 3:
       return tripleBitMask;
+    default:
+      throw new Error(`Unknown size: ${size}`);
   }
 };
 
@@ -38,7 +40,11 @@ const createField = (name: string, size: 1 | 2 | 3): Field => ({
   size,
 });
 
-const createRegistry = (name: string, word: Bit, code: TripleBit): Registry => ({
+const createRegistry = (
+  name: string,
+  word: Bit,
+  code: TripleBit,
+): Registry => ({
   code,
   word,
   ...createField(name, 3),
@@ -58,23 +64,25 @@ const fieldNameToField = {
   "r/m": registerOrMemoryField,
 };
 
-const byteRegisters = ["al", "cl", "dl", "bl", "ah", "ch", "dh", "bh"].map((name, index) =>
-  createRegistry(name, 0, index as TripleBit),
-);
+const byteRegisters = ["al", "cl", "dl", "bl", "ah", "ch", "dh", "bh"].map((
+  name,
+  index,
+) => createRegistry(name, 0, index as TripleBit));
 
-const wordRegisters = ["ax", "cx", "dx", "bx", "ah", "ch", "dh", "bh"].map((name, index) =>
-  createRegistry(name, 1, index as TripleBit),
-);
+const wordRegisters = ["ax", "cx", "dx", "bx", "ah", "ch", "dh", "bh"].map((
+  name,
+  index,
+) => createRegistry(name, 1, index as TripleBit));
 
 const registers = [byteRegisters, wordRegisters];
 
 const fieldArrayToMatrix = (fields: Field[]) => {
-  return fields.reduceRight(
+  return fields.reduceRight<Field[][]>(
     (prevMatrix, field) => {
       List.unshift(prevMatrix[0], field);
 
       const sizeSum = prevMatrix[0]
-        .map((field) => field.size)
+        .map((f) => f.size)
         .reduce((result, size) => result + size);
 
       if (sizeSum === 8) {
@@ -87,12 +95,19 @@ const fieldArrayToMatrix = (fields: Field[]) => {
   );
 };
 
-const createInstrDecoder = (operation: string, code: Byte, ...fieldNames: FieldName[]) => {
+const createInstrDecoder = (
+  operation: string,
+  code: Byte,
+  ...fieldNames: FieldName[]
+) => {
   const allFields = fieldNames.map((name) => fieldNameToField[name]);
   const fieldMatrix = fieldArrayToMatrix(allFields);
-  const firstByteFieldsSize = fieldMatrix[0].reduce((size, field) => size + field.size, 0);
+  const firstByteFieldsSize = fieldMatrix[0].reduce(
+    (size, field) => size + field.size,
+    0,
+  );
 
-  return (bytes: Byte[]): string | null => {
+  return (bytes: Uint8Array): string | null => {
     const firstByteCode = bytes[0] >> firstByteFieldsSize;
 
     if (firstByteCode !== code) {
@@ -142,9 +157,11 @@ const createInstrDecoder = (operation: string, code: Byte, ...fieldNames: FieldN
   };
 };
 
-const instrDecoders = [createInstrDecoder("mov", 0b100010, "d", "w", "mod", "reg", "r/m")];
+const instrDecoders = [
+  createInstrDecoder("mov", 0b100010, "d", "w", "mod", "reg", "r/m"),
+];
 
-export const decode = (inputBytes: Byte[]) => {
+export const decode = (inputBytes: Uint8Array) => {
   for (const decoder of instrDecoders) {
     const result = decoder(inputBytes);
 
@@ -153,27 +170,3 @@ export const decode = (inputBytes: Byte[]) => {
     }
   }
 };
-
-// const decodeFirstByte = (byte: number) => {
-//   const direction = byte & 0b10
-//   const word = byte & 0b1;
-//   const operand = byte >> 2;
-//
-//   return {
-//     direction,
-//     word,
-//     operand,
-//   };
-// };
-//
-// const decodeSecondByte = (byte: number) => {
-//   const rm = byte & 0b111;
-//   const reg = (byte >> 3) & 0b111;
-//   const mod = (byte >> 6) & 0b11;
-//
-//   return {
-//     rm,
-//     reg,
-//     mod,
-//   };
-// };
