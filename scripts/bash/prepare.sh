@@ -1,11 +1,11 @@
 #!/bin/bash
 
-asm_src="./test/asm"
-asm_bin="./test/bin"
+asm_src="./test/assets/asm"
+asm_bin="./test/assets/bin"
 
 mkdir -p $asm_bin
 
-echo "Build ASM test binaries:"
+echo "Building ASM test binaries:"
 
 for entry in $asm_src/*
 do
