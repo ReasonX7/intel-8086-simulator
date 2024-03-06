@@ -2,7 +2,8 @@
   "tasks": {
     "dev": "deno run --watch src/main.ts",
     "prepare": "deno run --allow-run --allow-read --allow-write scripts/prepare.ts",
-    "check": "deno fmt && deno lint"
+    "check": "deno fmt && deno lint",
+    "setup": "deno task prepare & deno run -A -r https://deno.land/x/githooks/githooks.ts"
   },
   "githooks": {
     "pre-commit": "check"

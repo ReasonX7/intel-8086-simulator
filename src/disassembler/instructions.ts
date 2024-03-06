@@ -1,6 +1,6 @@
 import type { Bit, Byte, TripleBit } from "./binary.ts";
 
-import { List } from "./utils.ts";
+import { List } from "../utils/mod.ts";
 
 type FieldName = "w" | "d" | "reg" | "mod" | "r/m";
 
