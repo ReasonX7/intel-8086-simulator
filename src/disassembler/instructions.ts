@@ -20,11 +20,12 @@ const getMaskBySize = (size: number) => {
     default:
       throw new Error(`Unknown size: ${size}`);
   }
-}; /**
+};
+
+/**
  * @param name - String representation.
  * @param size - How many bits the field takes.
  */
-
 const createField = (name: string, size: 1 | 2 | 3): Field => ({ name, size });
 
 const createRegistry = (
@@ -52,7 +53,7 @@ const byteRegisters = ["al", "cl", "dl", "bl", "ah", "ch", "dh", "bh"].map((
   index,
 ) => createRegistry(name, 0, index as TripleBit));
 
-const wordRegisters = ["ax", "cx", "dx", "bx", "ah", "ch", "dh", "bh"].map((
+const wordRegisters = ["ax", "cx", "dx", "bx", "sp", "bp", "si", "di"].map((
   name,
   index,
 ) => createRegistry(name, 1, index as TripleBit));
@@ -86,7 +87,7 @@ const createInstrDecoder = (
     bytes: Uint8Array,
     byteIndex: number,
   ): { byteIndex: number; result: string } => {
-    const firstByteCode = bytes[0] >> firstByteFieldsSize;
+    const firstByteCode = bytes[byteIndex] >> firstByteFieldsSize;
     if (firstByteCode !== code) {
       return {
         byteIndex,
@@ -102,7 +103,7 @@ const createInstrDecoder = (
 
     for (let i = 0; i < fieldMatrix.length; i++) {
       const fields = fieldMatrix[i];
-      const byte = bytes[i];
+      const byte = bytes[byteIndex + i];
 
       let bitOffset = 0;
       let code = 0;
@@ -154,8 +155,8 @@ export const decode = (inputBytes: Uint8Array) => {
       const res = decoder(inputBytes, index);
 
       if (res.result) {
-        index = res.byteIndex + 1;
         str += res.result;
+        index = res.byteIndex + 2;
       }
     }
   }

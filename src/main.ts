@@ -1,7 +1,7 @@
 import { path } from "../deps.ts";
 import { decode } from "./disassembler/mod.ts";
 
-const [listingNumber = "0037"] = Deno.args;
+const [listingNumber = "0038"] = Deno.args;
 const saveFlag = Deno.args.includes("--save") || Deno.args.includes("-s");
 
 const cwd = Deno.cwd();
@@ -22,13 +22,13 @@ const originalBuffer = await Deno.readFile(path.join(binDir, binFile));
 const assemblyCode = decode(originalBuffer);
 
 console.log("\nAssembly code:");
-console.log("=========================\n");
+console.log("======================================\n");
 console.log(assemblyCode.split("\n").map((str) => `  ${str}`).join("\n"));
-console.log("=========================\n");
+console.log("======================================\n");
 
 try {
   await Deno.mkdir(tmpDir);
-// deno-lint-ignore no-unused-vars
+  // deno-lint-ignore no-unused-vars
 } catch (ex) {
   // Ignore error if directory already exists.
 }
@@ -49,7 +49,9 @@ const { success } = await new Deno.Command("nasm", { args }).output();
 if (success) {
   console.log(`"${binFile}" was successfully compiled.`);
 } else {
-  console.error(`NASM was unable to compile the result ASM code into "${binFile}". Check out \"nasm.logs.txt\" for details.`);
+  console.error(
+    `NASM was unable to compile the result ASM code into "${binFile}". Check out \"nasm.logs.txt\" for details.`,
+  );
 }
 
 const resultBuffer = await Deno.readFile(path.join(tmpDir, binFile));
@@ -65,7 +67,7 @@ if (buffersAreEqual) {
 if (!saveFlag) {
   await Deno
     .remove(tmpDir, { recursive: true })
-    .then(() => console.log("\"tmp\" folder was removed.\n"));
+    .then(() => console.log('"tmp" folder was removed.\n'));
 } else {
-  console.log("\"--save\" flag detected. \"tmp\" folder won't be removed.")
+  console.log('"--save" flag detected. "tmp" folder won\'t be removed.');
 }
